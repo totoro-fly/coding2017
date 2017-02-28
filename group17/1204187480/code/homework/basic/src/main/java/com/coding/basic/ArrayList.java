@@ -8,6 +8,8 @@ public class ArrayList implements List {
 
     private Object[] elementData = new Object[100];
 
+    private Iterator iterator = new ArrayListIterator();
+
     private int length() {
         return elementData.length;
     }
@@ -31,7 +33,7 @@ public class ArrayList implements List {
     }
 
     public void add(int index, Object o) {
-        checkIndex(index);
+        checkForAdd(index);
         enLargeElementData();
         // 备份 index 处及后面的数据
         Object[] elementsBehindIndex = backBehindElements(elementData, index);
@@ -64,6 +66,12 @@ public class ArrayList implements List {
         }
     }
 
+    private void checkForAdd(int index) {
+        if (index < 0 || index > size) {
+            throw new ArrayIndexOutOfBoundsException(String.format("index=%s, size=%s", index, size));
+        }
+    }
+
     public Object remove(int index) {
         checkIndex(index);
         Object[] back = backBehindElements(elementData, index + 1);
@@ -79,7 +87,22 @@ public class ArrayList implements List {
     }
 
     public Iterator iterator() {
-        return null;
+        return iterator;
+    }
+
+    private class ArrayListIterator implements Iterator {
+
+        int next = 0;
+
+        @Override
+        public boolean hasNext() {
+           return next < size;
+        }
+
+        @Override
+        public Object next() {
+            return elementData[next++];
+        }
     }
 
 }
